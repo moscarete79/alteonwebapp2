@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Web Info</title>
+<style>
+.content { display: none; overflow: hidden; }
+.active, .collapsible:hover { background-color: #ccc; }
+.collapsible { background-color: #eee; cursor: pointer; outline: none; margin: auto; display:block;}
+</style>
+</head>
+<body onload="ProtocolVer();">
+        <?php
+                function randStr( $length = 20 ) {
+                        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $string = '';
+
+                        for ($i = 0; $i < $length; $i++) {
+                                $string .= $characters[mt_rand(0, strlen($characters) - 1)];
+                        }
+                        return $string;
+                }
+                if( !isset( $_COOKIE['ServerCookie'] ) ) { setcookie("ServerCookie", randStr() ); }
+        ?>
+
+        <img src="/images/rad.jpg" width="150" height="40" style="display: block; margin: auto;">
+
+        <H3 align="center">TCP\IP Info:</H3>
+        <table align="center">
+                <tr><td>Protocol Version:</td>
+                <td id="ProtocolVer"></td></tr>
+                <?php
+                        $headers = array();
+                        echo '<tr><td>Cient IP:</td><td>' . getenv('REMOTE_ADDR') . '</td></tr>';
+                        echo '<tr><td>Client (Src) Port: </td><td>' . getenv('REMOTE_PORT') . '</td></td>';
+                        $host = getenv('HTTP_HOST');
+                        if ( strpos($host, 'scenario3') !== false || strpos($host, 'scenario4') !== false) {
+                                if ( getenv('SERVER_ADDR') == '10.100.3.11') {
+                                        echo '<tr><td>Server Type: </td><td> Development</tr>';
+                                } elseif (getenv('SERVER_ADDR') == '10.100.3.12' || getenv('SERVER_ADDR') == '10.100.3.13') {
+                                        echo '<tr><td>Server Type: </td><td> Staging </tr>';
+                                } else {
+                                        echo '<tr><td>Server Type: </td><td> Production </tr>';
+                                }
+                        }
+                        $srv_ip = getenv('SERVER_ADDR');
+                        if ( $srv_ip == '10.100.3.11' ) { $srv = "Server1"; }
+                        elseif ( $srv_ip == '10.100.3.12' ) { $srv = "Server2"; }
+                        elseif ( $srv_ip == '10.100.3.13' ) { $srv = "Server3"; }
+                        elseif ( $srv_ip == '10.100.3.14' ) { $srv = "Server4"; }
+                        elseif ( $srv_ip == '10.100.3.15' ) { $srv = "Server5"; }
+			else { $srv = "Server0"; }
+                        echo '<tr><td>Server: </td><td>' . $srv . '</td></tr>';
+                        echo '<tr><td>Server IP: </td><td>' . getenv('SERVER_ADDR') . '</td></tr>';
+                        echo '<tr><td>Server (Dest) Port: </td><td>' . getenv('SERVER_PORT') . '</td></td>';
+                        $ip=getenv('REMOTE_ADDR');
+			
+			if ( getenv('REMOTE_ADDR') == '10.100.3.150' ) {
+				echo '<tr><td>Served By: </td><td> Site A - Alteon 1</td></tr>';
+			} elseif  ( getenv('REMOTE_ADDR') == '10.100.3.151' ) {
+                                echo '<tr><td>Served By: </td><td> Site A - Alteon 2</td></tr>';
+			}
+                ?>
+        </table>
+	</br>
+	<div align="center">
+		<input align="center" type="button" onclick="location.href='/ifs.php?q=alt1-all-links-down';" value="Disable Site A - Alteon 1" style="background-color:#eee"/></br>
+		<input align="center" type="button" onclick="location.href='/ifs.php?q=alt2-isp1-down';" value="Disable Site A – ISP 1" style="background-color:#eee"/></br>
+		<input align="center" type="button" onclick="location.href='/ifs.php?q=down';" value="Disable Site A – Real Servers" style="background-color:#eee"/></br>
+	        <input align="center" type="button" onclick="location.href='/ifs.php?q=up';" value="Enable Everything – Back to Normal" style="background-color:#eee"/></br>
+	</div>
+        </br>
+        <button type="button" class="collapsible">View/Hide Request Headers</button>
+                <table class="content" align="center" style="display:block;width:max-content;">
+                <?php
+                        echo "<tr><td>Request URI : </td><td> " . getenv('REQUEST_URI') . " </td></tr>";
+                        foreach($_SERVER as $name => $value) {
+                                if (strpos($name, 'HTTP_') === 0) {
+                                        $headers = str_replace(' ', '-', ucwords(str_replace('_', " ", strtolower(substr($name, 5)))));
+                                        if ($headers === "X-Forwarded-For") { $ip = $value; }
+                                        echo "<tr><td nowrap>".$headers." : </td><td>". $i[$headers] = $value . "</td></tr>";
+                                }
+                        }
+                        header("IP: $ip");
+                ?>
+                </table>
+        </br>
+        <button type="button" class="collapsible">Post a Message</button>
+        <div class="content" align="center">
+                <form action="echo.php" method="post">
+                <textarea id="Msg" type="test" cols="40" rows="5" name="Msg"></textarea>
+                </br>
+                <input type="submit" name="Go!" value="submit" />
+        </div>
+<script>
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i=0; i< coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                                content.style.display = "none";
+                        } else {
+                                content.style.display = "block";
+                        }
+                });
+        }
+        function ProtocolVer() {
+                document.getElementById("ProtocolVer").innerHTML = performance.getEntries()[0].nextHopProtocol;
+        }
+</script>
+</form>
+<p>Served by Apache</p>
+</body>
+</html>
+
