@@ -10,7 +10,8 @@
 </style>
 </head>
 <body onload="ProtocolVer();">
-<?php function randStr( $length = 20 ) {
+        <?php
+                function randStr( $length = 20 ) {
                         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
                         $string = '';
 
@@ -20,12 +21,16 @@
                         return $string;
                 }
                 if( !isset( $_COOKIE['ServerCookie'] ) ) { setcookie("ServerCookie", randStr() ); }
-?> <img src="/images/rad.jpg" width="150" height="40" style="display: block; margin: auto;">
+        ?>
+
+        <img src="/images/rad.jpg" width="150" height="40" style="display: block; margin: auto;">
+
         <H3 align="center">TCP\IP Info:</H3>
         <table align="center">
                 <tr><td>Protocol Version:</td>
                 <td id="ProtocolVer"></td></tr>
-<?php $headers = array();
+                <?php
+                        $headers = array();
                         echo '<tr><td>Cient IP:</td><td>' . getenv('REMOTE_ADDR') . '</td></tr>';
                         echo '<tr><td>Client (Src) Port: </td><td>' . getenv('REMOTE_PORT') . '</td></td>';
                         $host = getenv('HTTP_HOST');
@@ -55,7 +60,7 @@
 			} elseif  ( getenv('REMOTE_ADDR') == '10.100.3.151' ) {
                                 echo '<tr><td>Served By: </td><td> Site A - Alteon 2</td></tr>';
 			}
-?>
+                ?>
         </table>
 	</br>
 	<div align="center">
@@ -67,7 +72,8 @@
         </br>
         <button type="button" class="collapsible">View/Hide Request Headers</button>
                 <table class="content" align="center" style="display:block;width:max-content;">
-<?php echo "<tr><td>Request URI : </td><td> " . getenv('REQUEST_URI') . " </td></tr>";
+                <?php
+                        echo "<tr><td>Request URI : </td><td> " . getenv('REQUEST_URI') . " </td></tr>";
                         foreach($_SERVER as $name => $value) {
                                 if (strpos($name, 'HTTP_') === 0) {
                                         $headers = str_replace(' ', '-', ucwords(str_replace('_', " ", strtolower(substr($name, 5)))));
@@ -76,7 +82,8 @@
                                 }
                         }
                         header("IP: $ip");
-?> </table>
+                ?>
+                </table>
         </br>
         <button type="button" class="collapsible">Post a Message</button>
         <div class="content" align="center">
